@@ -1,9 +1,11 @@
 public class Factorial {
 
     public static int calculate(int number){
+        int remaining = number;
         int result = 1;
-        for(int i = 1; i <= number; i++) {
-            result = result * i;
+        while(remaining > 0) {
+            result = result * remaining;
+            remaining--;
         }
         return result;
     }
