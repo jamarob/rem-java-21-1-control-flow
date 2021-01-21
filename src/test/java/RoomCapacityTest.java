@@ -1,73 +1,33 @@
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RoomCapacityTest {
 
-    @Test
-    public void returnsTooManyPeopleIfThreatLevelIsRed(){
-        // given
-        String threatLevel = "Red";
-        int  numberOfPeople = 3;
+    private static final String TOO_MANY_PEOPLE = "Too many people";
+    private static final String CAPACITY_NOT_REACHED = "Capacity limit not reached";
 
-        // when
-        String actual = RoomCapacity.getStatus(numberOfPeople, threatLevel);
+    @ParameterizedTest(name = "For <{0}> people and threat level <{1}> it returns <{2}>")
+    @MethodSource
+    public void testGetStatus(int givenNumberOfPeople, String givenThreatLevel, String expectedResult){
+        String actual = RoomCapacity.getStatus(givenNumberOfPeople, givenThreatLevel);
 
-        // then
-        assertEquals("Too many people", actual);
+        assertEquals(expectedResult, actual);
     }
 
-    @Test
-    public void returnsTooManyPeopleIfThereAreMoreThan30PeopleInTheRoomAndThreatLevelIsYellow(){
-        // given
-        String threatLevel = "Yellow";
-        int numberOfPeople = 42;
-
-        // when
-        String actual = RoomCapacity.getStatus(numberOfPeople, threatLevel);
-
-        // then
-        assertEquals("Too many people", actual);
+    private static Stream<Arguments> testGetStatus(){
+        return Stream.of(
+                Arguments.of(3, "Red", TOO_MANY_PEOPLE),
+                Arguments.of(42, "Yellow", TOO_MANY_PEOPLE),
+                Arguments.of(23, "Yellow", CAPACITY_NOT_REACHED),
+                Arguments.of(66, "Green", TOO_MANY_PEOPLE),
+                Arguments.of(42, "Green", CAPACITY_NOT_REACHED)
+        );
     }
-
-    @Test
-    public void returnsCapacityLimitNotReachedIfThereAreLessThan30PeopleInTheRoomAndThreatLevelIsYellow(){
-        // given
-        String threatLevel = "Yellow";
-        int numberOfPeople = 23;
-
-        // when
-        String actual = RoomCapacity.getStatus(numberOfPeople, threatLevel);
-
-        // then
-        assertEquals("Capacity limit not reached", actual);
-    }
-
-    @Test
-    public void returnsTooManyPeopleIfThereAreMoreThan60PeopleInTheRoomAndThreatLevelIsGreen(){
-        // given
-        String threatLevel = "Green";
-        int numberOfPeople = 66;
-
-        // when
-        String actual = RoomCapacity.getStatus(numberOfPeople, threatLevel);
-
-        // then
-        assertEquals("Too many people", actual);
-    }
-
-    @Test
-    public void returnsCapacityLimitNotReachedIfThereAreLessThan30PeopleInTheRoomAndThreatLevelIsGreen(){
-        // given
-        String threatLevel = "Green";
-        int numberOfPeople = 42;
-
-        // when
-        String actual = RoomCapacity.getStatus(numberOfPeople, threatLevel);
-
-        // then
-        assertEquals("Capacity limit not reached", actual);
-    }
-
 
 }
